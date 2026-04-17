@@ -785,4 +785,837 @@
     <div class="brand">
       <div class="brand-mark">⏵</div>
       <div class="brand-text">
-        <div class="brand-title">Real-Time Logic Lab</di
+        <div class="brand-title">Real-Time Logic Lab</div>
+        <div class="brand-sub">JS Graphics · CodeHS</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="day-counter">DAY <strong id="dayNum">01</strong> / 20</div>
+      <button class="icon-btn" id="projectorBtn" title="Toggle larger fonts for projecting">
+        <span>📽</span> PROJECTOR
+      </button>
+    </div>
+  </header>
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-label">Curriculum</div>
+      <div class="sidebar-title">4 Weeks · 20 Lessons</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div id="weeksContainer"></div>
+    <div class="sidebar-footer">
+      <button class="workflow-toggle" id="workflowBtn">📋 Class Workflow Notes</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main-inner" id="mainContent"></div>
+  </main>
+
+</div>
+
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-sub">Teacher reference</div>
+    <div class="modal-title">Class Workflow</div>
+    <p>This is real-time logic practice with small programs. Lead in with weekly focus on each of the <strong>Four Pillars of Computational Thinking</strong>.</p>
+    <p><strong>Directions for students:</strong> "Once we write it together, you will need to change it around to something you like. Once you have something you are proud of, take a screenshot with Command+Shift+4 and click/drag across the area you want saved. Post your screenshot on your Google Site website and submit the screenshot in Canvas for a grade."</p>
+    <p>"You will be using a JavaScript Graphics Console (IDE) to build and observe these programs. Your code will come to life. To make this easier, use your <strong>CodeHS Sandbox</strong>. To prevent cheating, it is best to live code these programs — you type and they type, with the opportunity for them to screenshot only once they successfully construct the code."</p>
+    <p>Students take screenshots for everything they do and place (with a title and/or description) on their ongoing Google Site website, then submit in Canvas for points.</p>
+    <p style="color: var(--text-dim); font-size: 13px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">Keeping a library like this in CodeHS Sandbox lets us share and access anytime, any year.</p>
+    <button class="modal-close" id="modalClose">Got it</button>
+  </div>
+</div>
+
+<script>
+const COURSE = [
+  {
+    week: 1,
+    title: "The Building Blocks",
+    subtitle: "Position & Size",
+    days: [
+      {
+        n: 1, title: "The Target",
+        tags: ["Layering", "Z-Order", "Circles"],
+        intro: "Today we're creating a bullseye. If we want circles to stack perfectly, does the biggest one go first or last in our code? Let's find out.",
+        code: `function start() {
+    // The largest circle must be drawn first (the back layer)
+    var outer = new Circle(150);
+    outer.setPosition(getWidth()/2, getHeight()/2);
+    outer.setColor(Color.red);
+    add(outer);
+
+    var middle = new Circle(100);
+    middle.setPosition(getWidth()/2, getHeight()/2);
+    middle.setColor(Color.white);
+    add(middle);
+
+    var inner = new Circle(50);
+    inner.setPosition(getWidth()/2, getHeight()/2);
+    inner.setColor(Color.red);
+    add(inner);
+}`
+      },
+      {
+        n: 2, title: "The Safety Zone",
+        tags: ["Centering Math", "Position", "Rectangles"],
+        intro: "Imagine a security camera boundary. We need to place a rectangle exactly in the center. How do we calculate the middle of any screen?",
+        code: `function start() {
+    var width = 200;
+    var height = 100;
+    var box = new Rectangle(width, height);
+    // To center, subtract half the object's size from the screen center
+    box.setPosition(getWidth()/2 - width/2, getHeight()/2 - height/2);
+    box.setColor(Color.blue);
+    add(box);
+}`
+      },
+      {
+        n: 3, title: "Modern Art Maker",
+        tags: ["Composition", "Overlap", "Shapes"],
+        intro: "Artists use math too! We're going to hard-code three random shapes. The catch? They must overlap perfectly to create a new color.",
+        code: `function start() {
+    var rect = new Rectangle(100, 100);
+    rect.setPosition(100, 100);
+    rect.setColor(Color.yellow);
+    add(rect);
+
+    var circ = new Circle(50);
+    circ.setPosition(150, 150);
+    circ.setColor(Color.cyan);
+    add(circ);
+}`
+      },
+      {
+        n: 4, title: "The Stoplight",
+        tags: ["Variables", "Vertical Alignment", "Order"],
+        intro: "Logic is about order. We need three circles, but they must be perfectly spaced vertically. How do we change 'Y' without changing 'X'?",
+        code: `function start() {
+    var centerX = getWidth() / 2;
+
+    var red = new Circle(40);
+    red.setPosition(centerX, 100);
+    red.setColor(Color.red);
+    add(red);
+
+    var yellow = new Circle(40);
+    yellow.setPosition(centerX, 200);
+    yellow.setColor(Color.yellow);
+    add(yellow);
+
+    var green = new Circle(40);
+    green.setPosition(centerX, 300);
+    green.setColor(Color.green);
+    add(green);
+}`
+      },
+      {
+        n: 5, title: "The Horizon",
+        tags: ["Background", "Scale", "Environment"],
+        intro: "We're building a world. One giant rectangle for the ground, one for the sky. Simple code, big environment.",
+        code: `function start() {
+    var sky = new Rectangle(getWidth(), getHeight());
+    sky.setColor(Color.cyan);
+    add(sky);
+
+    var ground = new Rectangle(getWidth(), getHeight() / 3);
+    ground.setPosition(0, (getHeight() / 3) * 2);
+    ground.setColor(Color.green);
+    add(ground);
+}`
+      }
+    ]
+  },
+  {
+    week: 2,
+    title: "Patterns & Decomposition",
+    subtitle: "Breaking it down",
+    days: [
+      {
+        n: 6, title: "The Robot Face",
+        tags: ["Decomposition", "Components", "Composition"],
+        intro: "Look at your neighbor. Their face is just a collection of shapes. Let's decompose a robot: 1 head, 2 eyes, 1 mouth.",
+        code: `function start() {
+    var head = new Rectangle(150, 150);
+    head.setPosition(125, 100);
+    head.setColor(Color.gray);
+    add(head);
+
+    var eye1 = new Circle(10);
+    eye1.setPosition(160, 140);
+    add(eye1);
+
+    var eye2 = new Circle(10);
+    eye2.setPosition(240, 140);
+    add(eye2);
+}`
+      },
+      {
+        n: 7, title: "The Pyramid",
+        tags: ["Stacking", "Symmetry", "Math"],
+        intro: "Stability matters. We're going to stack rectangles. If the base is 200 pixels wide, how narrow does the top need to be?",
+        code: `function start() {
+    var base = new Rectangle(200, 40);
+    base.setPosition(100, 300);
+    add(base);
+
+    var mid = new Rectangle(140, 40);
+    mid.setPosition(130, 260);
+    add(mid);
+
+    var top = new Rectangle(80, 40);
+    top.setPosition(160, 220);
+    add(top);
+}`
+      },
+      {
+        n: 8, title: "The Solar System",
+        tags: ["Relative Position", "Variables", "Anchoring"],
+        intro: "Everything revolves around a center. Let's place a Sun and one Planet. If we move the Sun, the Planet is lost. How do they relate?",
+        code: `function start() {
+    var sunX = getWidth() / 2;
+    var sunY = getHeight() / 2;
+
+    var sun = new Circle(50);
+    sun.setPosition(sunX, sunY);
+    sun.setColor(Color.orange);
+    add(sun);
+
+    var planet = new Circle(15);
+    planet.setPosition(sunX + 100, sunY);
+    planet.setColor(Color.blue);
+    add(planet);
+}`
+      },
+      {
+        n: 9, title: "The Name Tag",
+        tags: ["Text Rendering", "Combination", "Layout"],
+        intro: "Computers love text, but they treat it like a shape. Let's create a digital ID badge using a rectangle and the Text variable.",
+        code: `function start() {
+    var box = new Rectangle(200, 100);
+    box.setPosition(100, 100);
+    box.setColor(Color.red);
+    add(box);
+
+    var txt = new Text("HELLO", "20pt Arial");
+    txt.setPosition(140, 160);
+    txt.setColor(Color.white);
+    add(txt);
+}`
+      },
+      {
+        n: 10, title: "The Snowy Day",
+        tags: ["Repetition", "Random Placement", "Pattern"],
+        intro: "Snow isn't uniform. We're going to place five 'flakes'. Use your math to make sure they aren't all in a straight line.",
+        code: `function start() {
+    var flake1 = new Circle(5);
+    flake1.setPosition(50, 40);
+    add(flake1);
+
+    var flake2 = new Circle(5);
+    flake2.setPosition(150, 80);
+    add(flake2);
+
+    var flake3 = new Circle(5);
+    flake3.setPosition(250, 30);
+    add(flake3);
+}`
+      }
+    ]
+  },
+  {
+    week: 3,
+    title: "Input & Interaction",
+    subtitle: "The user enters",
+    days: [
+      {
+        n: 11, title: "The Ghost Follower",
+        tags: ["Mouse Input", "Event Handlers", "State"],
+        intro: "What if a shape knew where you were? We're going to write a program where a circle jumps to wherever you click.",
+        code: `var ghost;
+
+function start() {
+    ghost = new Circle(30);
+    ghost.setPosition(200, 200);
+    add(ghost);
+    mouseClickMethod(moveGhost);
+}
+
+function moveGhost(e) {
+    ghost.setPosition(e.getX(), e.getY());
+}`
+      },
+      {
+        n: 12, title: "Color Shifter",
+        tags: ["Mouse Events", "Random Colors", "Reactive"],
+        intro: "Computers react to us. Let's write a script that changes the background color every time the mouse is pressed.",
+        code: `function start() {
+    mouseClickMethod(changeColor);
+}
+
+function changeColor(e) {
+    setBackgroundColor(Randomizer.nextColor());
+}`
+      },
+      {
+        n: 13, title: "The Flashlight",
+        tags: ["Mouse Tracking", "Canvas State", "Movement"],
+        intro: "It's dark in here! We'll start with a black screen and make a yellow circle follow our mouse movements.",
+        code: `var light;
+
+function start() {
+    setBackgroundColor(Color.black);
+    light = new Circle(40);
+    light.setColor(Color.yellow);
+    add(light);
+    mouseMoveMethod(follow);
+}
+
+function follow(e) {
+    light.setPosition(e.getX(), e.getY());
+}`
+      },
+      {
+        n: 14, title: "The Growing Bubble",
+        tags: ["Click Counting", "Object Methods", "Mutation"],
+        intro: "Every click adds energy. We're going to make a circle that gets 10 pixels wider every time you click it.",
+        code: `var bubble;
+
+function start() {
+    bubble = new Circle(20);
+    bubble.setPosition(200, 200);
+    add(bubble);
+    mouseClickMethod(grow);
+}
+
+function grow(e) {
+    var currentRadius = bubble.getRadius();
+    bubble.setRadius(currentRadius + 10);
+}`
+      },
+      {
+        n: 15, title: "The Boundary Box",
+        tags: ["Hit Detection", "Conditionals", "Coordinates"],
+        intro: "Games have walls. Let's code a square that changes color only when you click inside its coordinates.",
+        code: `var box;
+
+function start() {
+    box = new Rectangle(100, 100);
+    box.setPosition(150, 150);
+    add(box);
+    mouseClickMethod(checkClick);
+}
+
+function checkClick(e) {
+    var element = getElementAt(e.getX(), e.getY());
+    if (element == box) {
+        box.setColor(Color.green);
+    }
+}`
+      }
+    ]
+  },
+  {
+    week: 4,
+    title: "Small-Scale Simulation",
+    subtitle: "Code that lives",
+    days: [
+      {
+        n: 16, title: "The Gravity Ball",
+        tags: ["Timer", "Conditionals", "Physics"],
+        intro: "What goes up must come down. We're going to make a ball 'fall' to the bottom of the screen using a timer.",
+        code: `var ball;
+
+function start() {
+    ball = new Circle(20);
+    ball.setPosition(200, 50);
+    add(ball);
+    setTimer(fall, 50);
+}
+
+function fall() {
+    if (ball.getY() < getHeight() - 20) {
+        ball.move(0, 5);
+    }
+}`
+      },
+      {
+        n: 17, title: "The Speedometer",
+        tags: ["Variables", "Speed Control", "Animation"],
+        intro: "How fast is fast? Let's create a bar that grows across the screen. If we change one number, the 'car' goes faster.",
+        code: `var bar;
+var speed = 2; // Students change this number
+
+function start() {
+    bar = new Rectangle(10, 50);
+    bar.setPosition(0, 200);
+    add(bar);
+    setTimer(drive, 50);
+}
+
+function drive() {
+    var currentWidth = bar.getWidth();
+    bar.setSize(currentWidth + speed, 50);
+}`
+      },
+      {
+        n: 18, title: "The Sunset",
+        tags: ["Animation", "State Change", "Timing"],
+        intro: "Time is just a loop. Let's code a sun that moves down while the sky slowly turns from blue to black.",
+        code: `var sun;
+
+function start() {
+    setBackgroundColor(Color.blue);
+    sun = new Circle(30);
+    sun.setPosition(200, 50);
+    sun.setColor(Color.yellow);
+    add(sun);
+    setTimer(sunset, 100);
+}
+
+function sunset() {
+    sun.move(0, 2);
+    if (sun.getY() > 200) {
+        setBackgroundColor(Color.black);
+    }
+}`
+      },
+      {
+        n: 19, title: "The Ping-Pong",
+        tags: ["Velocity", "Boundary Detection", "Bounce"],
+        intro: "Bouncing requires a decision: 'If I hit the wall, go the other way.' Let's teach our ball how to bounce.",
+        code: `var ball;
+var dy = 5;
+
+function start() {
+    ball = new Circle(20);
+    ball.setPosition(200, 200);
+    add(ball);
+    setTimer(bounce, 40);
+}
+
+function bounce() {
+    ball.move(0, dy);
+    if (ball.getY() > getHeight() || ball.getY() < 0) {
+        dy = -dy;
+    }
+}`
+      },
+      {
+        n: 20, title: "The Digital Signature",
+        tags: ["Synthesis", "Creative Project", "Capstone"],
+        intro: "You've spent the year as architects. For our final act, use every shape we've learned to code your own unique digital logo. (Student-led, using the structures from Days 1–19.)",
+        code: `// STUDENT-LED CAPSTONE
+// Combine everything: shapes, position, color, text,
+// mouse input, timers, conditionals, and animation.
+//
+// Challenge yourself to use at least 4 different
+// concepts from the past 19 days in one program.
+
+function start() {
+    // Your unique digital logo starts here...
+
+}`
+      }
+    ]
+  }
+];
+
+const STATE = {
+  currentDay: 1,
+  visited: new Set([1]),
+  liveMode: false,
+  previewShown: false,
+  projector: false,
+};
+
+function flatDays() {
+  return COURSE.flatMap(w => w.days.map(d => ({ ...d, week: w.week, weekTitle: w.title })));
+}
+function getDay(n) { return flatDays().find(d => d.n === n); }
+function getWeek(n) { return COURSE.find(w => w.days.some(d => d.n === n)); }
+
+function renderSidebar() {
+  const container = document.getElementById('weeksContainer');
+  container.innerHTML = COURSE.map(w => `
+    <div class="week">
+      <div class="week-header">
+        <span class="week-num">WK ${w.week}</span>
+        <span class="week-title">${w.title}</span>
+        <span class="week-sub">${w.subtitle}</span>
+      </div>
+      <ul class="day-list">
+        ${w.days.map(d => `
+          <li class="day-item ${STATE.currentDay === d.n ? 'active' : ''} ${STATE.visited.has(d.n) ? 'visited' : ''}" data-day="${d.n}">
+            <span class="day-num">${String(d.n).padStart(2,'0')}</span>
+            <span class="day-name">${d.title}</span>
+            <span class="visited-dot"></span>
+          </li>
+        `).join('')}
+      </ul>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.day-item').forEach(el => {
+    el.addEventListener('click', () => goToDay(parseInt(el.dataset.day)));
+  });
+
+  document.getElementById('progressFill').style.width = `${(STATE.visited.size / 20) * 100}%`;
+}
+
+function highlight(code) {
+  const lines = code.split('\n');
+  return lines.map(line => {
+    let html = escapeHtml(line);
+    html = html.replace(/(\/\/.*)$/g, '<span class="tk-comment">$1</span>');
+    html = html.replace(/(&quot;[^&]*?&quot;)/g, '<span class="tk-string">$1</span>');
+    html = html.replace(/("[^"]*?")/g, '<span class="tk-string">$1</span>');
+    html = html.replace(/\b(\d+)\b/g, '<span class="tk-number">$1</span>');
+    html = html.replace(/\b(function|var|let|const|if|else|return|new|true|false|null)\b/g,
+      '<span class="tk-keyword">$1</span>');
+    html = html.replace(/\b(Circle|Rectangle|Text|Color|Randomizer)\b/g,
+      '<span class="tk-class">$1</span>');
+    html = html.replace(/\b(start|add|setBackgroundColor|getWidth|getHeight|mouseClickMethod|mouseMoveMethod|setTimer|getElementAt)(?=\s*\()/g,
+      '<span class="tk-fn">$1</span>');
+    html = html.replace(/\.([a-zA-Z_]\w*)(?=\s*\()/g, '.<span class="tk-fn">$1</span>');
+    html = html.replace(/(<span class="tk-class">(?:Color|Randomizer)<\/span>)\.([a-zA-Z_]\w*)/g,
+      '$1.<span class="tk-prop">$2</span>');
+    return `<span class="code-line">${html || '&nbsp;'}</span>`;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderMain() {
+  const day = getDay(STATE.currentDay);
+  const week = getWeek(STATE.currentDay);
+  const prev = STATE.currentDay > 1 ? getDay(STATE.currentDay - 1) : null;
+  const next = STATE.currentDay < 20 ? getDay(STATE.currentDay + 1) : null;
+
+  document.getElementById('mainContent').innerHTML = `
+    <div class="day-meta">
+      <span class="day-badge">DAY ${String(day.n).padStart(2,'0')}</span>
+      <span class="week-pill">WEEK ${week.week} · ${week.title.toUpperCase()}</span>
+    </div>
+
+    <h1 class="day-title">${day.title}</h1>
+
+    <div class="tags">
+      ${day.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+    </div>
+
+    <div class="intro-card">
+      <div class="intro-label">⌁ Teaching Intro</div>
+      <div class="intro-text">"${day.intro}"</div>
+    </div>
+
+    <div class="code-card">
+      <div class="code-toolbar">
+        <div class="traffic"><span></span><span></span><span></span></div>
+        <div class="code-tab"><span class="dot"></span> day_${String(day.n).padStart(2,'0')}.js</div>
+        <div class="code-actions">
+          <button class="code-action live ${STATE.liveMode ? 'engaged' : ''}" id="liveBtn" title="Hide code so you can live-code with the class">
+            ${STATE.liveMode ? '◉ LIVE MODE ON' : '○ LIVE MODE'}
+          </button>
+          <button class="code-action" id="previewBtn" title="Show a preview of the finished result">
+            ${STATE.previewShown ? '▣ HIDE PREVIEW' : '▣ PREVIEW'}
+          </button>
+          <button class="code-action" id="copyBtn" title="Copy code to clipboard">
+            ⧉ COPY
+          </button>
+        </div>
+      </div>
+      <div class="code-body ${STATE.liveMode ? 'live-mode' : ''}" id="codeBody">
+        <pre><code id="codeContent">${highlight(day.code)}</code></pre>
+        <div class="live-overlay">
+          <div class="live-overlay-icon">▮ LIVE CODING</div>
+          <div class="live-overlay-text">Type with the class. Press the button above to reveal when ready.</div>
+          <div class="live-overlay-hint">Press L to toggle</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="preview-card ${STATE.previewShown ? 'shown' : ''}" id="previewCard">
+      <div class="preview-header">
+        <div class="preview-label"><span class="live-dot"></span>Result Preview</div>
+        <div class="preview-actions">
+          <button class="code-action" id="rerunBtn">↻ RERUN</button>
+        </div>
+      </div>
+      <div class="preview-body">
+        <canvas id="previewCanvas" width="400" height="400"></canvas>
+      </div>
+      <div class="preview-hint">Click and move on the canvas — interactive lessons respond.</div>
+    </div>
+
+    <div class="day-nav">
+      <button class="nav-btn" id="prevBtn" ${!prev ? 'disabled' : ''}>
+        <span class="nav-direction">← Previous</span>
+        <span class="nav-day">${prev ? `Day ${prev.n} · ${prev.title}` : 'Start of curriculum'}</span>
+      </button>
+      <button class="nav-btn next" id="nextBtn" ${!next ? 'disabled' : ''}>
+        <span class="nav-direction">Next →</span>
+        <span class="nav-day">${next ? `Day ${next.n} · ${next.title}` : 'End of curriculum'}</span>
+      </button>
+    </div>
+  `;
+
+  document.getElementById('dayNum').textContent = String(day.n).padStart(2,'0');
+
+  bindMainEvents();
+
+  if (STATE.previewShown) runPreview();
+}
+
+function bindMainEvents() {
+  document.getElementById('liveBtn').addEventListener('click', toggleLive);
+  document.getElementById('previewBtn').addEventListener('click', togglePreview);
+  document.getElementById('copyBtn').addEventListener('click', copyCode);
+  document.getElementById('prevBtn').addEventListener('click', () => goToDay(STATE.currentDay - 1));
+  document.getElementById('nextBtn').addEventListener('click', () => goToDay(STATE.currentDay + 1));
+  const rerun = document.getElementById('rerunBtn');
+  if (rerun) rerun.addEventListener('click', runPreview);
+}
+
+function goToDay(n) {
+  if (n < 1 || n > 20) return;
+  STATE.currentDay = n;
+  STATE.visited.add(n);
+  STATE.liveMode = false;
+  STATE.previewShown = false;
+  RUNTIME.reset();
+  renderSidebar();
+  renderMain();
+}
+
+function toggleLive() {
+  STATE.liveMode = !STATE.liveMode;
+  renderMain();
+}
+
+function togglePreview() {
+  STATE.previewShown = !STATE.previewShown;
+  renderMain();
+}
+
+function copyCode() {
+  const code = getDay(STATE.currentDay).code;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.getElementById('copyBtn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ COPIED';
+    btn.style.color = 'var(--accent)';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; }, 1400);
+  });
+}
+
+const RUNTIME = (() => {
+  let canvas = null, ctx = null;
+  let elements = [];
+  let bgColor = 'white';
+  let timers = [];
+  let clickFn = null, moveFn = null;
+  let bound = false;
+
+  function ensure() {
+    canvas = document.getElementById('previewCanvas');
+    if (!canvas) return false;
+    ctx = canvas.getContext('2d');
+    if (!bound) {
+      canvas.addEventListener('click', (ev) => {
+        if (clickFn) clickFn(makeEvent(ev));
+        render();
+      });
+      canvas.addEventListener('mousemove', (ev) => {
+        if (moveFn) moveFn(makeEvent(ev));
+        render();
+      });
+      bound = true;
+    }
+    return true;
+  }
+
+  function makeEvent(ev) {
+    const r = canvas.getBoundingClientRect();
+    const x = (ev.clientX - r.left) * (canvas.width / r.width);
+    const y = (ev.clientY - r.top) * (canvas.height / r.height);
+    return { getX: () => x, getY: () => y };
+  }
+
+  function reset() {
+    elements = [];
+    bgColor = 'white';
+    timers.forEach(id => clearInterval(id));
+    timers = [];
+    clickFn = null; moveFn = null;
+    if (ctx) render();
+  }
+
+  function render() {
+    if (!ctx) return;
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    elements.forEach(el => el._draw(ctx));
+  }
+
+  function CircleShape(r) {
+    this.radius = r; this.x = 0; this.y = 0; this.color = 'black';
+  }
+  CircleShape.prototype.setPosition = function(x,y){this.x=x;this.y=y;};
+  CircleShape.prototype.setColor = function(c){this.color=c;};
+  CircleShape.prototype.setRadius = function(r){this.radius=r;};
+  CircleShape.prototype.getRadius = function(){return this.radius;};
+  CircleShape.prototype.getX = function(){return this.x;};
+  CircleShape.prototype.getY = function(){return this.y;};
+  CircleShape.prototype.move = function(dx,dy){this.x+=dx;this.y+=dy;};
+  CircleShape.prototype.contains = function(x,y){
+    const dx=x-this.x, dy=y-this.y; return dx*dx+dy*dy <= this.radius*this.radius;
+  };
+  CircleShape.prototype._draw = function(ctx){
+    ctx.fillStyle=this.color;
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+    ctx.fill();
+  };
+
+  function RectangleShape(w,h){
+    this.width=w; this.height=h; this.x=0; this.y=0; this.color='black';
+  }
+  RectangleShape.prototype.setPosition = function(x,y){this.x=x;this.y=y;};
+  RectangleShape.prototype.setColor = function(c){this.color=c;};
+  RectangleShape.prototype.setSize = function(w,h){this.width=w;this.height=h;};
+  RectangleShape.prototype.getWidth = function(){return this.width;};
+  RectangleShape.prototype.getHeight = function(){return this.height;};
+  RectangleShape.prototype.getX = function(){return this.x;};
+  RectangleShape.prototype.getY = function(){return this.y;};
+  RectangleShape.prototype.move = function(dx,dy){this.x+=dx;this.y+=dy;};
+  RectangleShape.prototype.contains = function(x,y){
+    return x>=this.x && x<=this.x+this.width && y>=this.y && y<=this.y+this.height;
+  };
+  RectangleShape.prototype._draw = function(ctx){
+    ctx.fillStyle=this.color;
+    ctx.fillRect(this.x,this.y,this.width,this.height);
+  };
+
+  function TextShape(str, font){
+    this.str=str; this.font=font||'12pt Arial';
+    this.x=0; this.y=0; this.color='black';
+  }
+  TextShape.prototype.setPosition = function(x,y){this.x=x;this.y=y;};
+  TextShape.prototype.setColor = function(c){this.color=c;};
+  TextShape.prototype._draw = function(ctx){
+    ctx.fillStyle=this.color;
+    ctx.font = this.font.replace(/(\d+)pt/, (_,n) => `${parseInt(n)*1.33|0}px`);
+    ctx.fillText(this.str, this.x, this.y);
+  };
+
+  const Color = {
+    red:'#e63946', white:'#ffffff', blue:'#1d4ed8', yellow:'#facc15',
+    green:'#22c55e', cyan:'#06b6d4', orange:'#f97316', black:'#000000',
+    gray:'#6b7280', grey:'#6b7280', purple:'#9333ea', pink:'#ec4899',
+    magenta:'#d946ef', brown:'#92400e', lightGray:'#d1d5db', darkGray:'#374151'
+  };
+
+  const Randomizer = {
+    nextColor(){ return `rgb(${Math.random()*255|0},${Math.random()*255|0},${Math.random()*255|0})`; },
+    nextInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; },
+    nextFloat(min,max){ return Math.random()*(max-min)+min; },
+    nextBoolean(){ return Math.random() > 0.5; }
+  };
+
+  function run(code) {
+    if (!ensure()) return;
+    reset();
+
+    const api = {
+      Circle: function(r){ return new CircleShape(r); },
+      Rectangle: function(w,h){ return new RectangleShape(w,h); },
+      Text: function(s,f){ return new TextShape(s,f); },
+      Color, Randomizer,
+      add: (el) => { elements.push(el); render(); },
+      remove: (el) => { elements = elements.filter(e => e !== el); render(); },
+      getWidth: () => canvas.width,
+      getHeight: () => canvas.height,
+      setBackgroundColor: (c) => { bgColor = c; render(); },
+      mouseClickMethod: (fn) => { clickFn = fn; },
+      mouseMoveMethod: (fn) => { moveFn = fn; },
+      setTimer: (fn, ms) => {
+        const id = setInterval(() => { try { fn(); render(); } catch(e){ clearInterval(id); console.error(e); } }, ms);
+        timers.push(id);
+      },
+      stopTimer: (fn) => {},
+      getElementAt: (x,y) => {
+        for (let i = elements.length - 1; i >= 0; i--) {
+          if (elements[i].contains && elements[i].contains(x,y)) return elements[i];
+        }
+        return null;
+      },
+      println: console.log
+    };
+
+    const keys = Object.keys(api);
+    try {
+      const userFn = new Function(...keys, code + '\nif (typeof start === "function") start();');
+      userFn(...keys.map(k => api[k]));
+      render();
+    } catch(e) {
+      console.error('Preview error:', e);
+      ctx.fillStyle = '#fee';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = '#900';
+      ctx.font = '14px monospace';
+      ctx.fillText('Preview error: ' + e.message, 10, 24);
+    }
+  }
+
+  return { run, reset };
+})();
+
+function runPreview() {
+  const code = getDay(STATE.currentDay).code;
+  setTimeout(() => RUNTIME.run(code), 30);
+}
+
+document.getElementById('projectorBtn').addEventListener('click', () => {
+  STATE.projector = !STATE.projector;
+  document.body.classList.toggle('projector', STATE.projector);
+  document.getElementById('projectorBtn').classList.toggle('active', STATE.projector);
+});
+
+document.getElementById('workflowBtn').addEventListener('click', () => {
+  document.getElementById('modal').classList.add('shown');
+});
+document.getElementById('modalClose').addEventListener('click', () => {
+  document.getElementById('modal').classList.remove('shown');
+});
+document.getElementById('modal').addEventListener('click', (e) => {
+  if (e.target.id === 'modal') document.getElementById('modal').classList.remove('shown');
+});
+
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('modal').classList.contains('shown')) {
+    if (e.key === 'Escape') document.getElementById('modal').classList.remove('shown');
+    return;
+  }
+  if (e.key === 'ArrowRight') goToDay(STATE.currentDay + 1);
+  else if (e.key === 'ArrowLeft') goToDay(STATE.currentDay - 1);
+  else if (e.key === 'l' || e.key === 'L') toggleLive();
+  else if (e.key === 'p' || e.key === 'P') {
+    if (e.shiftKey) {
+      STATE.projector = !STATE.projector;
+      document.body.classList.toggle('projector', STATE.projector);
+      document.getElementById('projectorBtn').classList.toggle('active', STATE.projector);
+    } else {
+      togglePreview();
+    }
+  }
+});
+
+renderSidebar();
+renderMain();
+</script>
+</body>
+</html>
